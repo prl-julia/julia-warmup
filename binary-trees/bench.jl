@@ -1,8 +1,7 @@
-# The Computer Language Benchmarks Game
-# https://salsa.debian.org/benchmarksgame-team/benchmarksgame/
 
-# based on an OCaml program
-# *reset*
+MIN_DEPTH = 4
+MAX_DEPTH = 12
+EXPECT_CKSUM = -10914
 
 using Printf
 
@@ -14,47 +13,50 @@ end
 mutable struct Node <: BTree
     left::BTree
     right::BTree
+    item ::Int
 end
 
-function make(d)
+function make(i, d)
     if d == 0
-        Node(Empty(), Empty())
+        Node(Empty(), Empty(), i)
     else
-        Node(make(d-1), make(d-1))
+        Node(make(2*i-1, d-1), make(2*i, d-1), i)
     end
 end
 
 check(t::Empty) = 0
-check(t::Node) = 1 + check(t.left) + check(t.right)
+check(t::Node) = t.item + check(t.left) - check(t.right)
 
 function loop_depths(d, min_depth, max_depth)
-    for i = 0:div(max_depth - d, 2)
-        niter = 1 << (max_depth - d + min_depth)
-        c = 0
-        for j = 1:niter
-            c += check(make(d))
-        end
-        @printf("%i\t trees of depth %i\t check: %i\n", niter, d, c)
-        d += 2
-    end
 end
 
-function perf_binary_trees(N::Int=10)
-    min_depth = 4
-    max_depth = N
+function inner_iter(min_depth, max_depth)
     stretch_depth = max_depth + 1
+    chk :: Int32 = 0
 
     # create and check stretch tree
-    let c = check(make(stretch_depth))
-        @printf("stretch tree of depth %i\t check: %i\n", stretch_depth, c)
+    chk += check(make(0, stretch_depth))
+
+    long_lived_tree = make(0, max_depth)
+
+    niter = 1 << max_depth
+    for d = min_depth:2:max_depth
+        for i = 1:niter
+            chk += check(make(i, d)) + check(make(-i, d))
+        end
+        niter >>= 2
     end
 
-    long_lived_tree = make(max_depth)
+    chk += check(long_lived_tree)
 
-    loop_depths(min_depth, min_depth, max_depth)
-    @printf("long lived tree of depth %i\t check: %i\n", max_depth, check(long_lived_tree))
-
+    if (chk != EXPECT_CKSUM)
+        println("bad check: $chk vs $EXPECT_CKSUM");
+        exit(1);
+    end
 end
 
-n = parse(Int,ARGS[1])
-perf_binary_trees(n)
+run_iter(n) = begin
+    for i in 1:n
+        inner_iter(MIN_DEPTH, MAX_DEPTH)
+    end
+end
