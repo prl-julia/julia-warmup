@@ -1,3 +1,13 @@
+#
+# Accepts 2 parameters: id of the process run, number of iterations, e.g.
+#
+#   julia binary-trees/bench.jl 5 20
+#
+# Prints out a line of CSV following the warmup_stats format
+# (https://github.com/softdevteam/warmup_stats/)
+#
+
+using Printf
 
 MIN_DEPTH = 4
 MAX_DEPTH = 12
@@ -56,7 +66,28 @@ function inner_iter(min_depth, max_depth)
 end
 
 run_iter(n) = begin
+    ms = Vector{Float64}(undef, n)
     for i in 1:n
+        t = time_ns()
         inner_iter(MIN_DEPTH, MAX_DEPTH)
+        elapsed = (time_ns() - t) / 1e9
+        ms[i] = elapsed
     end
+    for m in ms
+        @printf ", %.4f" m
+    end
+    println()
 end
+
+#
+# Main
+#
+
+#println("args: $ARGS")
+id = parse(Int, ARGS[1])
+iters = parse(Int, ARGS[2])
+#exit()
+
+# print process run entry prefix (id, bench name), mind commas
+print("$id, binary trees")
+run_iter(iters)

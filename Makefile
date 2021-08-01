@@ -8,6 +8,8 @@
 all: binary-trees
 
 binary-trees:
-	julia -L binary-trees/bench.jl -e 'run_iter(1)'
+	julia binary-trees/bench.jl 1 20
 
+runner:
+	./run.sh binary-trees
 # end
