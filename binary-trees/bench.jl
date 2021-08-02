@@ -74,7 +74,7 @@ run_iter(n) = begin
         ms[i] = elapsed
     end
     for m in ms
-        @printf ", %.4f" m
+        @printf ", %.5f" m
     end
     println()
 end
