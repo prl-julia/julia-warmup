@@ -73,6 +73,8 @@ run_iter(n) = begin
         elapsed = (time_ns() - t) / 1e9
         ms[i] = elapsed
     end
+
+    print("$id, binary trees")
     for m in ms
         @printf ", %.5f" m
     end
@@ -89,5 +91,4 @@ iters = parse(Int, ARGS[2])
 #exit()
 
 # print process run entry prefix (id, bench name), mind commas
-print("$id, binary trees")
 run_iter(iters)
