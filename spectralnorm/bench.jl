@@ -1,9 +1,7 @@
-# The Computer Language Benchmarks Game
-# https://salsa.debian.org/benchmarksgame-team/benchmarksgame/
-
-# based on the Javascript program
-
 using Printf
+
+SPECTRAL_N  = 1000
+EXPECT_CKSUM = 1.2742241481294835914184204739285632967948913574218750
 
 A(i,j) = 1.0 / ((i+j)*(i+j+1.0)/2.0+i+1.0)
 
@@ -23,7 +21,7 @@ function Atu(w,v)
     end
 end
 
-function perf_spectralnorm(n::Int=100)
+function inner_iter(n::Int)
     u = ones(Float64,n)
     v = zeros(Float64,n)
     w = zeros(Float64,n)
@@ -38,8 +36,18 @@ function perf_spectralnorm(n::Int=100)
         vBv += u[i]*v[i]
         vv += v[i]*v[i]
     end
-    return sqrt(vBv/vv)
+    chk = sqrt(vBv/vv)
+    if (chk != EXPECT_CKSUM)
+        println("bad check: $chk vs $EXPECT_CKSUM");
+        exit(1);
+    end
+    return chk
 end
 
-n = parse(Int,ARGS[1])
-@printf("%.9f\n", perf_spectralnorm(n))
+macro inner_iter()
+  :(inner_iter(SPECTRAL_N))
+end
+
+bench_name="spectralnorm"
+include("../shared.jl")
+

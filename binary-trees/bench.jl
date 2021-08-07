@@ -65,30 +65,10 @@ function inner_iter(min_depth, max_depth)
     end
 end
 
-run_iter(n) = begin
-    ms = Vector{Float64}(undef, n)
-    for i in 1:n
-        t = time_ns()
-        inner_iter(MIN_DEPTH, MAX_DEPTH)
-        elapsed = (time_ns() - t) / 1e9
-        ms[i] = elapsed
-    end
-
-    print("$id, binary trees")
-    for m in ms
-        @printf ", %.5f" m
-    end
-    println()
+macro inner_iter()
+  :(inner_iter(MIN_DEPTH, MAX_DEPTH))
 end
 
-#
-# Main
-#
+bench_name="binary trees"
+include("../shared.jl")
 
-#println("args: $ARGS")
-id = parse(Int, ARGS[1])
-iters = parse(Int, ARGS[2])
-#exit()
-
-# print process run entry prefix (id, bench name), mind commas
-run_iter(iters)
