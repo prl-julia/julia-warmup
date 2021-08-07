@@ -3,13 +3,17 @@
 #
 # @version 0.1
 
-.PHONY: all binary-trees
+PHONY: all
 
-all: binary-trees
+all: run-binary-trees
 
-binary-trees:
-	julia binary-trees/bench.jl 1 20
+lrun-%:
+	./lrun.sh $*
 
-runner:
-	./run.sh binary-trees
+run-%:
+	julia $*/bench.jl 1 20
+
+%-trace-comp:
+	julia --trace-compile=stderr $*/bench.jl 1 20
+
 # end
