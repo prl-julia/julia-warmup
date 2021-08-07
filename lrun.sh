@@ -2,7 +2,7 @@
 set -euo pipefail
 
 #
-# Run with sudo (to stop various daemons)
+# Run under user with sudo privileges (to stop various daemons)
 # Accepts 1 argument: the name of the benchmark to run (e.g. binary-trees)
 #
 
