@@ -16,7 +16,6 @@ out="out.csv"
 sudo systemctl stop docker.socket
 sudo systemctl stop docker
 sudo systemctl stop systemd-timesyncd
-sudo systemctl stop display-manager
 sudo ifconfig enp0s31f6 down
 sync
 

@@ -7,8 +7,6 @@
 # (https://github.com/softdevteam/warmup_stats/)
 #
 
-using Printf
-
 MIN_DEPTH = 4
 MAX_DEPTH = 12
 EXPECT_CKSUM = -10914

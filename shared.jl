@@ -6,6 +6,8 @@
 #   iteration of the benchmark
 #
 
+using Printf
+
 # Run N iterations of the inner_iter defined in the including file
 # and print timings as a line of CSV to stdout
 run_iter(n) = begin
