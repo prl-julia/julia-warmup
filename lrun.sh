@@ -13,8 +13,6 @@ iters=2000
 out="out.csv"
 
 # Process management
-sudo systemctl stop docker.socket
-sudo systemctl stop docker
 sudo systemctl stop systemd-timesyncd
 sudo ifconfig enp0s31f6 down
 sync
